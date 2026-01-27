@@ -1,0 +1,95 @@
+{
+    "resourceSpecId": "99999999-9999-4999-8999-999999999999",
+    "stableId": "api-ecr",
+    "displayName": "API ECR Repository",
+    "resourceType": "container.ecr",
+    "vpcDependency": "none",
+    "status": "draft",
+    "inputs": {
+        "repository_name": "sigmoid/api",
+        "image_tag_mutability": "IMMUTABLE",
+        "scan_on_push": true,
+        "encryption_type": "KMS",
+        "kms_key": { "ref": "kms-key.arn" },
+        "force_delete": false,
+        "create_lifecycle_policy": true,
+        "lifecycle_policy": {
+            "rules": [
+                {
+                    "rulePriority": 1,
+                    "description": "Keep last 30 production images",
+                    "selection": {
+                        "tagStatus": "tagged",
+                        "tagPrefixList": ["prod-", "v"],
+                        "countType": "imageCountMoreThan",
+                        "countNumber": 30
+                    },
+                    "action": {
+                        "type": "expire"
+                    }
+                },
+                {
+                    "rulePriority": 2,
+                    "description": "Delete untagged images older than 7 days",
+                    "selection": {
+                        "tagStatus": "untagged",
+                        "countType": "sinceImagePushed",
+                        "countUnit": "days",
+                        "countNumber": 7
+                    },
+                    "action": {
+                        "type": "expire"
+                    }
+                },
+                {
+                    "rulePriority": 3,
+                    "description": "Keep last 10 dev images",
+                    "selection": {
+                        "tagStatus": "tagged",
+                        "tagPrefixList": ["dev-", "feature-"],
+                        "countType": "imageCountMoreThan",
+                        "countNumber": 10
+                    },
+                    "action": {
+                        "type": "expire"
+                    }
+                }
+            ]
+        },
+        "repository_read_access_arns": [
+            { "ref": "ecs-execution-role.arn" }
+        ],
+        "repository_read_write_access_arns": [
+            { "ref": "ci-cd-role.arn" }
+        ],
+        "repository_lambda_read_access_arns": [
+            { "ref": "image-processor-lambda.role_arn" }
+        ],
+        "tags": {
+            "Environment": "production",
+            "Project": "sigmoid",
+            "Service": "api"
+        }
+    },
+    "inputSpecs": [
+        { "name": "repository_name", "type": "string", "required": true },
+        { "name": "image_tag_mutability", "type": "string", "required": false, "default": "IMMUTABLE" },
+        { "name": "scan_on_push", "type": "boolean", "required": false, "default": true },
+        { "name": "encryption_type", "type": "string", "required": false, "default": "AES256" },
+        { "name": "kms_key", "type": "string", "required": false },
+        { "name": "force_delete", "type": "boolean", "required": false, "default": false },
+        { "name": "lifecycle_policy", "type": "object", "required": false },
+        { "name": "repository_policy", "type": "object", "required": false },
+        { "name": "repository_read_access_arns", "type": "array", "required": false },
+        { "name": "repository_read_write_access_arns", "type": "array", "required": false },
+        { "name": "create_lifecycle_policy", "type": "boolean", "required": false, "default": true },
+        { "name": "repository_lambda_read_access_arns", "type": "array", "required": false },
+        { "name": "tags", "type": "object", "required": false }
+    ],
+    "position": { "x": 400, "y": 50 },
+    "terraform": {
+        "module": {
+            "source": "../../terraform-modules/terraform-aws-ecr"
+        }
+    }
+}
