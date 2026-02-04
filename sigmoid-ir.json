@@ -91,7 +91,8 @@
     "position": { "x": 400, "y": 50 },
     "terraform": {
         "module": {
-            "source": "../../terraform-modules/terraform-aws-ecr"
+            "source": "github.com/sigmoid-hq/terraform-aws-ecr",
+            "ref": "main"
         }
     }
 }
