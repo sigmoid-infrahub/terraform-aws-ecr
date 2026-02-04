@@ -2,6 +2,8 @@
     "resourceSpecId": "99999999-9999-4999-8999-999999999999",
     "stableId": "api-ecr",
     "displayName": "API ECR Repository",
+    "category": "container",
+    "iconUrl": "https://cdn.sigmoid.us/icons/aws/full-size/svg/container/ecr.svg",
     "resourceType": "container.ecr",
     "vpcDependency": "none",
     "status": "draft",
