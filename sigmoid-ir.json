@@ -24,6 +24,21 @@
                 { "field": "location", "value": "${location}" },
                 { "field": "productFamily", "defaultValue": "Storage", "required": false }
             ]
+        },
+        "usageProfiles": {
+            "default": "medium",
+            "low": {
+                "storage_gb": 20
+            },
+            "medium": {
+                "storage_gb": 100
+            },
+            "high": {
+                "storage_gb": 1000
+            },
+            "xhigh": {
+                "storage_gb": 10000
+            }
         }
     }
 }
