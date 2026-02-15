@@ -40,5 +40,11 @@
                 "storage_gb": 10000
             }
         }
+    },
+    "easy": {
+        "alias": "Container Image Repository",
+        "group": "container-repository",
+        "priority": 10,
+        "allowedProperties": ["repository_name", "image_tag_mutability", "scan_on_push"]
     }
 }
