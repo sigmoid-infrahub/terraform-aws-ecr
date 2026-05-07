@@ -16,10 +16,25 @@ resource "aws_ecr_repository" "this" {
 }
 
 resource "aws_ecr_lifecycle_policy" "this" {
-  count = var.lifecycle_policy == null ? 0 : 1
+  count = var.create_lifecycle_policy && (var.lifecycle_policy != null || local.should_create_default_lifecycle_policy) ? 1 : 0
 
   repository = aws_ecr_repository.this.name
-  policy     = jsonencode(var.lifecycle_policy)
+  policy     = jsonencode(local.resolved_lifecycle_policy)
+}
+
+resource "aws_ecr_registry_scanning_configuration" "this" {
+  count = var.enable_registry_scanning ? 1 : 0
+
+  scan_type = "ENHANCED"
+
+  rule {
+    scan_frequency = "CONTINUOUS_SCAN"
+
+    repository_filter {
+      filter      = var.scan_filter_name
+      filter_type = "WILDCARD"
+    }
+  }
 }
 
 resource "aws_ecr_repository_policy" "this" {

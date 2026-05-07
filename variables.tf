@@ -45,6 +45,36 @@ variable "lifecycle_policy" {
   default     = null
 }
 
+variable "default_lifecycle_policy_enabled" {
+  type        = bool
+  description = "Enable Sigmoid-managed default lifecycle policy when no explicit lifecycle policy is provided"
+  default     = true
+}
+
+variable "expire_untagged_after_days" {
+  type        = number
+  description = "Number of days before untagged images expire in the default lifecycle policy"
+  default     = 7
+}
+
+variable "retain_latest_tagged_count" {
+  type        = number
+  description = "Number of latest tagged images to retain in the default lifecycle policy"
+  default     = 30
+}
+
+variable "enable_registry_scanning" {
+  type        = bool
+  description = "Enable enhanced ECR registry scanning"
+  default     = true
+}
+
+variable "scan_filter_name" {
+  type        = string
+  description = "Wildcard repository filter name for enhanced registry scanning"
+  default     = "*"
+}
+
 variable "repository_policy" {
   type        = any
   description = "Repository policy JSON"
